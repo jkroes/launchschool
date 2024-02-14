@@ -1,0 +1,161 @@
+START                 start of the program
+SET                   sets a variable we can use for later
+GET                   retrieve input from user
+PRINT                 displays output to user
+READ                  retrieve value from variable
+IF / ELSE IF / ELSE   show conditional branches in logic
+WHILE                 show looping logic
+END                   end of the program
+
+------------------------------------------------------------
+
+Problem: Return the sum of two integers
+
+Iterate through the collection one by one.
+  - save the first value as the starting value.
+  - for each iteration, compare the saved value with the current value.
+  - if the saved value is greater, or it's the same
+    - move to the next value in the collection
+  - otherwise, if the current value is greater
+    - reassign the saved value as the current value
+
+Note that the following example from LS must assume one-based indexing, because the while loop's final iterator value is the size of the collection, and in zero-based indexing the final element is one less than this. One-based indexing means, however, that the first iteration will compare two of the same value. This is likely a bug, because the fourth practice example explicitly uses zero-based indexing, and because LS hasn't covered one-based indexing yet. My examples below this one will use zero-based indexing.
+
+Note also that the example from LS does not use the READ directive. I will follow this convention.
+
+START
+
+# Given a collection of integers called "numbers"
+
+SET iterator = 1
+SET saved_number = value within numbers collection at space 1
+
+WHILE iterator <= length of numbers
+  SET current_number = value within numbers collection at space "iterator"
+  IF saved_number >= current_number
+    go to the next iteration
+  ELSE
+    saved_number = current_number
+
+  iterator = iterator + 1
+
+PRINT saved_number
+
+END
+
+------------------------------------------------------------
+
+START
+
+# Given two integers
+
+SET int1 = first integer
+SET int2 = second integer
+PRINT int1 + int2
+
+END
+
+------------------------------------------------------------
+
+Problem: Return a string that concatenates all strings in an array
+
+Given an array of strings
+Save an empty string
+Iterate through the strings. During iteration:
+- Concatenate the saved string and the current string
+After iteration, return the saved string
+
+START
+
+# Given an array of strings called "strings"
+
+SET iterator = 0
+SET catstr = an empty string
+
+WHILE iterator < length of strings
+  SET current = value within strings at space "iterator"
+  SET catstr = concatenate catstr and current
+  iterator = iterator + 1
+
+PRINT catstr
+
+END
+
+------------------------------------------------------------
+
+Problem: Return an array of every other element of an array of integers, starting with the first element
+
+Given an array of integers
+Save an empty output array
+Iterate through the input array
+- Save the current element
+- If the current element is even (if using zero-indexing) or odd (if using one-indexing), skip to the next iteration
+- Else append the element to the output array
+Return the output array
+
+START
+
+# Given an array of integers named "integers"
+
+SET iterator = 0
+SET outarr = an empty array
+
+WHILE iterator < size of input array
+  SET current = value of array at space "iterator"
+  IF iterator is odd
+    skip to next iteration
+  ELSE
+    SET outarr = append current to outarr
+
+  iterator = iterator + 1
+
+PRINT outarr
+
+------------------------------------------------------------
+
+Problem: Given a character and string, return the index of the third occurrence of the character in a string, or nil.
+
+Set count to zero
+Iterate through the characters of the input string
+- If the input character equals the current character
+  - Increase count by 1
+  - Check count. If it equals 3, return the index of the current character
+- Increase the iterator by one
+
+START
+
+# Given a character "match" and string "charseq"
+
+SET iterator = 0
+SET count = 0
+SET index = nil
+
+WHILE iterator < length of charseq
+  SET current = value of charseq at iterator
+  IF current equals match
+    count = count + 1
+    IF count equals 3
+       SET index = iterator
+
+  iterator = iterator + 1
+
+PRINT index
+
+END
+
+------------------------------------------------------------
+
+Problem: Merge two arrays into a single array, in order. Assume both arrays are equally sized.
+
+Given two arrays
+Save an empty array
+Save a new index starting at 0
+Iterate over the indices of the first array
+- Index the first array
+- Save this fist value at the new index
+- Increment the new index by 1
+- Index the second array
+- Save this second value at the new index
+- Increment the new index by 1
+- Increment the iterator index
+After iteration, return the saved array
