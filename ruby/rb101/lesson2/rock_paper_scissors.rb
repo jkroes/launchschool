@@ -3,11 +3,11 @@
 VALID_CHOICES = %w(rock paper scissors lizard spock)
 
 LOSES_TO = {
-  "rock"     => ["scissors", "lizard"],
-  "lizard"   => ["paper",    "spock"],
-  "spock"    => ["rock",     "scissors"],
-  "scissors" => ["lizard",   "paper"],
-  "paper"    => ["spock",    "rock"]
+  "rock"     => %w(scissors lizard),
+  "lizard"   => %w(paper    spock),
+  "spock"    => %w(rock     scissors),
+  "scissors" => %w(lizard   paper),
+  "paper"    => %w(spock    rock)
 }
 
 def prompt(message)
