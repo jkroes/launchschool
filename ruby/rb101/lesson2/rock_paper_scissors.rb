@@ -22,16 +22,14 @@ def win?(first, second)
   end
 end
 
-def display_results(player, computer)
-  results =
-    if win?(player, computer)
-      'You win!'
-    elsif win?(computer, player)
-      'You lose!'
-    else
-      "It's a tie!"
-    end
-  prompt results
+def results(player, computer)
+  if win?(player, computer)
+    'You win!'
+  elsif win?(computer, player)
+    'You lose!'
+  else
+    "It's a tie!"
+  end
 end
 
 loop do
@@ -47,9 +45,7 @@ loop do
   computer_choice = VALID_CHOICES.sample
 
   prompt "You chose #{choice}. Computer chose #{computer_choice}"
-
-  display_results(choice, computer_choice)
-
+  prompt results(choice, computer_choice)
   prompt 'Do you want to play again? (y/n)'
   answer = gets.chomp
   p answer
