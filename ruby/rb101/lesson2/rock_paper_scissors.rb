@@ -33,12 +33,18 @@ def results(player, computer)
 end
 
 loop do
-  choice = ''
-
   prompt "Choose one: #{VALID_CHOICES.join(', ')}"
-  loop do
-    choice = gets.chomp
-    break if VALID_CHOICES.include? choice
+
+  choice =
+    loop do
+    input = gets.chomp
+
+    choices = VALID_CHOICES.select do |vc|
+      vc.start_with? input
+    end
+
+    break choices[0] if choices.size == 1
+
     prompt "That's not a valid choice"
   end
 
@@ -47,8 +53,8 @@ loop do
   prompt "You chose #{choice}. Computer chose #{computer_choice}"
   prompt results(choice, computer_choice)
   prompt 'Do you want to play again? (y/n)'
+
   answer = gets.chomp
-  p answer
   break unless answer.downcase.start_with? 'y'
 end
 
