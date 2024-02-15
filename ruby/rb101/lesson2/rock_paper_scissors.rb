@@ -10,6 +10,12 @@ LOSES_TO = {
   "paper" => %w(spock rock)
 }
 
+RESULTS_MSGS = [
+  'You win this round!',
+  'You lose this round!',
+  "This round is a tie!"
+]
+
 def prompt(message)
   puts "=> #{message}"
 end
@@ -20,34 +26,57 @@ end
 
 def results(player, computer)
   if win?(player, computer)
-    'You win!'
+    0
   elsif win?(computer, player)
-    'You lose!'
+    1
   else
-    "It's a tie!"
+    2
   end
 end
 
 loop do
-  prompt "Choose one: #{VALID_CHOICES.join(', ')}"
+  prompt 'Beginning a match of rock, paper, scissors, lizard, spock'
+  prompt 'The match will end when one party reaches three wins'
 
-  choice =
-    loop do
-      input = gets.chomp
+  player_wins = 0
+  computer_wins = 0
 
-      choices = VALID_CHOICES.select do |vc|
-        vc.start_with? input
+  until player_wins == 3 || computer_wins == 3
+    prompt "Choose one: #{VALID_CHOICES.join(', ')}"
+
+    choice =
+      loop do
+        input = gets.chomp
+
+        choices = VALID_CHOICES.select do |vc|
+          vc.start_with? input
+        end
+
+        break choices[0] if choices.size == 1
+
+        prompt "That's not a valid choice"
       end
 
-      break choices[0] if choices.size == 1
+    computer_choice = VALID_CHOICES.sample
 
-      prompt "That's not a valid choice"
+    prompt "You chose #{choice}. Computer chose #{computer_choice}"
+
+    results_code = results(choice, computer_choice)
+
+    prompt RESULTS_MSGS[results_code]
+
+    case results_code
+    when 0 then player_wins += 1
+    when 1 then computer_wins += 1
     end
+  end
 
-  computer_choice = VALID_CHOICES.sample
+  if player_wins == 3
+    prompt 'You won the match!'
+  else
+    prompt 'The computer won the match!'
+  end
 
-  prompt "You chose #{choice}. Computer chose #{computer_choice}"
-  prompt results(choice, computer_choice)
   prompt 'Do you want to play again? (y/n)'
 
   answer = gets.chomp
