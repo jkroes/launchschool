@@ -1,15 +1,24 @@
 #!/usr/bin/env ruby
 
-VALID_CHOICES = %w(rock paper scissors)
+VALID_CHOICES = %w(rock paper scissors lizard spock)
+
+LOSES_TO = {
+  "rock"     => ["scissors", "lizard"],
+  "lizard"   => ["paper",    "spock"],
+  "spock"    => ["rock",     "scissors"],
+  "scissors" => ["lizard",   "paper"],
+  "paper"    => ["spock",    "rock"]
+}
 
 def prompt(message)
   puts "=> #{message}"
 end
 
 def win?(first, second)
-  case [first, second]
-  when %w(rock scissors), %w(scissors paper), %w(paper rock)
+  if LOSES_TO[first].include? second
     true
+  else
+    false
   end
 end
 
