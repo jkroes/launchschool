@@ -6,5 +6,5 @@ left = spaces / 2
 right = spaces - left
 " " * left + title + " " * right
 
-# Canonical answer
+# Canonical answer:
 title.center(40)
