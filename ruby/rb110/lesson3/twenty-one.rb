@@ -68,7 +68,11 @@ def dealer_stay?(total)
 end
 
 def winner(human_total, computer_total)
-  if human_total > computer_total
+  if bust? human_total
+    "You busted. The dealer wins!"
+  elsif bust? computer_total
+    "The dealer busted. You win!"
+  elsif human_total > computer_total
     'You won!'
   elsif human_total < computer_total
     'The dealer won!'
@@ -126,6 +130,17 @@ def play_again?
   gets.chomp.downcase.start_with? "y"
 end
 
+def display_results(human, computer, human_total, computer_total)
+  prompt "Comparing hands to determine the outcome of this game."
+  prompt_player(human, human_total)
+  prompt_dealer(computer, computer_total)
+  puts ""
+  puts "=" * 40
+  prompt winner(human_total, computer_total)
+  puts "=" * 40
+  puts ""
+end
+
 loop do
   system 'clear'
   prompt "Welcome to blackjack."
@@ -171,12 +186,7 @@ loop do
   puts ""
 
   if bust? player_total
-    prompt "Comparing hands to determine the outcome of this game."
-    prompt_player(player, player_total)
-    prompt_dealer(dealer, dealer_total)
-    puts ""
-    prompt "You busted. The dealer wins!"
-    puts ""
+    display_results(player, dealer, player_total, dealer_total)
     play_again? ? next : break
   end
 
@@ -194,22 +204,18 @@ loop do
   puts ""
 
   if bust? dealer_total
-    prompt "Comparing hands to determine the outcome of this game."
-    prompt_player(player, player_total)
-    prompt_dealer(dealer, dealer_total)
-    puts ""
-    prompt "The dealer busted. You win!"
-    puts ""
+    display_results(player, dealer, player_total, dealer_total)
     play_again? ? next : break
   end
 
-  prompt "Comparing hands to determine the outcome of this game."
-  prompt_player(player, player_total)
-  prompt_dealer(dealer, dealer_total)
-  puts ""
-  prompt winner(player_total, dealer_total)
-  puts ""
-  play_again? ? next : break
+  display_results(player, dealer, player_total, dealer_total)
+  break unless play_again?
 end
 
 prompt "Thank you for playing!"
+
+# Bonus Feature 2: The last call to play_again? differs from
+# earlier ones in that it doesn't use the ternary option to
+# choose between enxt and break. Because it is the last line of
+# the outer loop, the outer loop will repeat immediately without
+# a call to next.
