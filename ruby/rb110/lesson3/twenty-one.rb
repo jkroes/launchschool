@@ -55,22 +55,19 @@ def total(cards)
   ace_values(values).sum
 end
 
-def bust?(cards)
-  total(cards) > 21
+def bust?(total)
+  total > 21
 end
 
-def blackjack?(cards)
-  total(cards) == 21
+def blackjack?(total)
+  total == 21
 end
 
-def dealer_stay?(cards)
-  total(cards) >= 17
+def dealer_stay?(total)
+  total >= 17
 end
 
-def winner(human, computer)
-  human_total = total(human)
-  computer_total = total(computer)
-
+def winner(human_total, computer_total)
   if human_total > computer_total
     'You won!'
   elsif human_total < computer_total
@@ -102,26 +99,26 @@ def prompt_dealer_cards(cards)
   prompt "The dealer holds #{join_hand(cards)}."
 end
 
-def prompt_dealer_total(cards)
-  prompt "The value of the dealer's hand is #{total(cards)}"
+def prompt_dealer_total(total)
+  prompt "The value of the dealer's hand is #{total}"
 end
 
-def prompt_dealer(cards)
+def prompt_dealer(cards, total)
   prompt_dealer_cards(cards)
-  prompt_dealer_total(cards)
+  prompt_dealer_total(total)
 end
 
 def prompt_player_cards(cards)
   prompt "You hold #{join_hand(cards)}"
 end
 
-def prompt_player_total(cards)
-  prompt "The value of your hand is #{total(cards)}"
+def prompt_player_total(total)
+  prompt "The value of your hand is #{total}"
 end
 
-def prompt_player(cards)
+def prompt_player(cards, total)
   prompt_player_cards(cards)
-  prompt_player_total(cards)
+  prompt_player_total(total)
 end
 
 def play_again?
@@ -145,20 +142,24 @@ loop do
     deal!(deck, dealer)
   end
 
+  player_total = total(player)
+  dealer_total = total(dealer)
+
   prompt "Player turn starts"
   prompt "The dealer holds #{join_hand(dealer[1])} and an unknown card"
   prompt_player_cards(player)
 
   loop do
-    prompt_player_total(player)
-    break if blackjack?(player)
-    break if bust? player
+    prompt_player_total(player_total)
+    break if blackjack?(player_total)
+    break if bust? player_total
 
     prompt "Do you want to h(it) or s(tay)?"
 
     hit_or_stay = gets.chomp.downcase
     if hit_or_stay.start_with? "h"
       prompt "Dealt %s" % deal!(deck, player)
+      player_total = total(player)
     elsif hit_or_stay.start_with? "s"
       break
     else
@@ -169,10 +170,10 @@ loop do
   prompt "Player turn has concluded"
   puts ""
 
-  if bust? player
+  if bust? player_total
     prompt "Comparing hands to determine the outcome of this game."
-    prompt_player(player)
-    prompt_dealer(dealer)
+    prompt_player(player, player_total)
+    prompt_dealer(dealer, dealer_total)
     puts ""
     prompt "You busted. The dealer wins!"
     puts ""
@@ -183,18 +184,19 @@ loop do
   prompt_dealer_cards(dealer)
 
   loop do
-    prompt_dealer_total(dealer)
-    break if dealer_stay?(dealer)
+    prompt_dealer_total(dealer_total)
+    break if dealer_stay?(dealer_total)
     prompt "Dealt %s" % deal!(deck, dealer)
+    dealer_total = total(dealer)
   end
 
   prompt "Dealer turn has concluded"
   puts ""
 
-  if bust? dealer
+  if bust? dealer_total
     prompt "Comparing hands to determine the outcome of this game."
-    prompt_player(player)
-    prompt_dealer(dealer)
+    prompt_player(player, player_total)
+    prompt_dealer(dealer, dealer_total)
     puts ""
     prompt "The dealer busted. You win!"
     puts ""
@@ -202,10 +204,10 @@ loop do
   end
 
   prompt "Comparing hands to determine the outcome of this game."
-  prompt_player(player)
-  prompt_dealer(dealer)
+  prompt_player(player, player_total)
+  prompt_dealer(dealer, dealer_total)
   puts ""
-  prompt winner(player, dealer)
+  prompt winner(player_total, dealer_total)
   puts ""
   play_again? ? next : break
 end
