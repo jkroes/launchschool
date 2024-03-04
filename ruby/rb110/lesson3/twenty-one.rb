@@ -3,6 +3,8 @@
 FACE_CARDS = ['Jack', 'Queen', 'King']
 RANKS = ['Ace', *2..10, *FACE_CARDS]
 SUITS = ['Hearts', 'Clubs', 'Spades', 'Diamonds']
+BUST_LIMIT = 21
+DEALER_TARGET = 17
 
 def prompt(msg)
   puts "=> #{msg}"
@@ -29,7 +31,7 @@ end
 def deal!(cards, hand)
   card = cards.delete(cards.sample)
   hand.append(card)
-  card
+  join_hand(card)
 end
 
 # rubocop:disable Lint/ElseLayout
@@ -43,7 +45,7 @@ end
 
 def ace_values(values)
   ace_idx = values.rindex(11)
-  if values.sum > 21 && ace_idx
+  if values.sum > BUST_LIMIT && ace_idx
     values[ace_idx] = 1
     ace_values(values)
   end
@@ -56,15 +58,15 @@ def total(cards)
 end
 
 def bust?(total)
-  total > 21
+  total > BUST_LIMIT
 end
 
 def blackjack?(total)
-  total == 21
+  total == BUST_LIMIT
 end
 
 def dealer_stay?(total)
-  total >= 17
+  total >= DEALER_TARGET
 end
 
 def determine_result!(human_total, computer_total, score)
@@ -168,7 +170,7 @@ loop do
   prompt "First to five wins the match"
   puts ""
 
-  wins = {player: 0, dealer: 0}
+  wins = { player: 0, dealer: 0 }
 
   loop do
     player = []
@@ -185,7 +187,8 @@ loop do
     player_total = total(player)
     dealer_total = total(dealer)
 
-    prompt "The current score is Player: #{wins[:player]}, Dealer: #{wins[:dealer]}"
+    prompt "The current score is Player: #{wins[:player]}, \
+Dealer: #{wins[:dealer]}"
     puts ""
     prompt "Player turn starts"
     prompt "The dealer holds #{join_hand(dealer[1])} and an unknown card"
@@ -200,7 +203,7 @@ loop do
 
       hit_or_stay = gets.chomp.downcase
       if hit_or_stay.start_with? "h"
-        prompt "Dealt %s" % deal!(deck, player)
+        prompt format("Dealt %s", deal!(deck, player))
         player_total = total(player)
       elsif hit_or_stay.start_with? "s"
         break
@@ -223,7 +226,7 @@ loop do
     loop do
       prompt_dealer_total(dealer_total)
       break if dealer_stay?(dealer_total)
-      prompt "Dealt %s" % deal!(deck, dealer)
+      prompt format("Dealt %s", deal!(deck, dealer))
       dealer_total = total(dealer)
     end
 
@@ -245,12 +248,10 @@ loop do
     prompt "The dealer won the match!"
   end
 
-  play_again? ? next : break
+  break unless play_again?
 end
 
 prompt "Thank you for playing!"
-
-
 
 # Bonus Feature 2: The last call to play_again? differs from
 # earlier ones in that it doesn't use the ternary option to
