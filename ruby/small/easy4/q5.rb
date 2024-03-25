@@ -17,7 +17,7 @@ p multisum(1000) == 234168
 # conditional fails, so that the next iteration starts from sum.
 def multisum2(end_range)
   (1..end_range).reduce(0) do |sum, num|
-    rhs = (num % 3 == 0 || num % 5 == 0) ? sum + num : sum
+    (num % 3 == 0 || num % 5 == 0) ? sum + num : sum
   end
 end
 
